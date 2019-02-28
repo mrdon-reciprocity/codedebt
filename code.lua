@@ -76,11 +76,12 @@
    
 		
 	possible_states = {
-		title=1,
+		menu=1,
 		chasing=2,
-		typing=3
+		typing=3,
+        gameover=4        
 	}
-	current_state= possible_states.chasing
+	current_state= possible_states.menu
 	current_treasure=nil
     --FUNCTIONS    
 
@@ -102,6 +103,7 @@
 			tile=TREASURE,
 			consumed=false
 		}
+        current_state = possible_states.chasing
 	end
 	
     --player movement
@@ -146,8 +148,7 @@
 		    
         if keyp(KEYS[current_letter])==true then
 			current_treasure.current_pos = current_treasure.current_pos+1
-
-			
+	
 			if current_treasure.current_pos==string.len(current_treasure.word)+1 then
 				current_treasure.consumed=true
                 p.x=current_treasure.x
@@ -174,6 +175,49 @@
 		print (untyped_text, 15+typed_length*20, 15, TEXT_UNTYPED, true, 3 )
 	
 	end
+
+    function start_menu()
+        menu_cursor = 1
+        menu_options = {"Play", "Quit"}
+        current_state = possible_states.menu
+    end
+
+    function draw_menu()
+        cls()
+        for x=1,14,2 do
+            rectb(2+x, 1+x, 240-4-x, 136-2-x,x)
+        end
+
+        local offset = 40
+        print("Code Debt", 30, 30, TEXT_TYPED, false, 3)
+        for k, v in pairs(menu_options) do
+            if k == menu_cursor then
+                print(v, 50, offset * k + 30, TEXT_TYPED, false, 2)
+            else
+                print(v, 50, offset * k + 30, TEXT_UNTYPED, false, 1.5)
+            end
+        end
+    end
+
+    function process_menu()
+        if btnp(0) then 
+            menu_cursor = menu_cursor - 1
+            if menu_cursor < 1 then
+                menu_cursor = #menu_options
+            end
+        elseif btnp(1) then
+            menu_cursor = menu_cursor + 1
+            if menu_cursor > #menu_options then 
+                menu_cursor = 1
+            end
+        elseif btnp(4) or keyp(50)then
+            if menu_cursor == 1 then
+                start_game()
+            elseif menu_cursor == 2 then
+                exit()
+            end
+        end
+    end
 	
     --draw screen graphics
     function draw_chasing()
@@ -188,10 +232,13 @@
 	 end
     end
 	
-	start_game()
+	start_menu()
 	function TIC()
 		
-		if current_state==possible_states.chasing then
+        if current_state == possible_states.menu then
+            process_menu()
+            draw_menu()
+		elseif current_state==possible_states.chasing then
 			move_chasing()
 			draw_chasing()
 		elseif current_state==possible_states.typing then
