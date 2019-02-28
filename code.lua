@@ -1,4 +1,4 @@
-    
+
     -- title:  simple collision detection
     -- author: Bear Thorne
     -- desc:   Detecting Collision for Grid Movement
@@ -67,12 +67,16 @@
     --game constants
     SCREEN_X=29
     SCREEN_Y=16
+    WINDOW_X=240
+    WINDOW_Y=136
     MOVEMENT_SPEED=15
     MOVEMENT_DELAY=0
 	
 	--colors
 	TEXT_TYPED = 8
 	TEXT_UNTYPED = 13
+    SCORE_LINE = 2
+    SCORE_TIMELOW = 6
    
 		
 	possible_states = {
@@ -103,12 +107,17 @@
 			tile=TREASURE,
 			consumed=false
 		}
+
+        game_start_time = time()
         current_state = possible_states.chasing
 	end
 	
     --player movement
     --we'll use the btnp() function to detect a single button press
     function move_chasing()
+        time_in_game = (time() - game_start_time) / 1000
+
+
     	x=p.x
     	y=p.y
         --player presses "up"
@@ -185,7 +194,7 @@
     function draw_menu()
         cls()
         for x=1,14,2 do
-            rectb(2+x, 1+x, 240-4-x, 136-2-x,x)
+            rectb(2+x, 1+x, WINDOW_X-4-x, WINDOW_Y-2-x,x)
         end
 
         local offset = 40
@@ -230,6 +239,19 @@
 	 if treasure.consumed==false then
 		 spr(treasure.tile,treasure.x*8,treasure.y*8,8)
 	 end
+
+     local secs_in_game = math.floor((time() - game_start_time) / 1000)
+     local time_left = 0
+     if secs_in_game < 10 then
+        time_left = 10 - secs_in_game
+     end
+     local timer_color = SCORE_LINE
+     if time_left < 4 then
+        timer_color = SCORE_TIMELOW
+     end
+
+     print("Time left: "..time_left, 10, WINDOW_Y - 10, timer_color, false, 1)
+     print("Score: "..p.score, WINDOW_X/2, WINDOW_Y - 10, SCORE_LINE, false, 1)
     end
 	
 	start_menu()
