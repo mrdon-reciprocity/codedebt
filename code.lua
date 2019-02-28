@@ -10,12 +10,12 @@
     FLOOR=1  --the floor sprite will be stored in the 1 slot
     WALL=224  --the wall sprite will be stored in the 17 slot
     DUDE=16  --the player sprite will be stored in the 33 slot
-    
+       
     --game constants
     SCREEN_X=29
     SCREEN_Y=16
     MOVEMENT_SPEED=15
-    MOVEMENT_DELAY=60
+    MOVEMENT_DELAY=0
     
     --player object
     p={
@@ -49,7 +49,7 @@
          x=p.x+1 
         end
 
-        if mget(x,y)~=224 then
+        if mget(x,y)==FLOOR then
         	p.x=x
         	p.y=y
         end
