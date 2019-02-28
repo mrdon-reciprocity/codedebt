@@ -217,8 +217,15 @@
 
     function draw_menu()
         cls()
-        for x=1,14,2 do
-            rectb(2+x, 1+x, WINDOW_X-4-x, WINDOW_Y-2-x,x)
+        local offset = math.floor(time() / 1000) % 5
+        
+        for x=1,5,1 do
+            local color = x + offset
+            if color > 7 then
+                color = color -7
+            end
+            local xoffset = 
+            rectb(2+(2*x), 1+(2*x), WINDOW_X-(2*x)-4, WINDOW_Y-(2*x)-2,color)
         end
 
         local offset = 40
