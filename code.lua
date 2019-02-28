@@ -144,12 +144,14 @@
     end
 	
 	function process_typing()
-		local current_letter = current_treasure.word:sub(current_treasure.current_pos,1)
-		if keyp(19)==true then
+		local current_letter = string.upper(current_treasure.word:sub(current_treasure.current_pos,current_treasure.current_pos+1))
+		trace("current position  "..current_treasure.current_pos)
+            
+        if keyp(KEYS[current_letter])==true then
 			trace("current letters  "..current_letter)
 			trace("current position  "..current_treasure.current_pos)
 			trace("key is current letter  ")
-			trace(keyp(19))
+			trace("lah"..KEYS[current_letter])
 			current_treasure.current_pos = current_treasure.current_pos+1
 
 			
