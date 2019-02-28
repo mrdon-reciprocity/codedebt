@@ -145,9 +145,7 @@
 	
 	function process_typing()
 		local current_letter = string.upper(current_treasure.word:sub(current_treasure.current_pos,current_treasure.current_pos))
-		trace("current position  "..current_treasure.current_pos)
-        trace("current letters  "..current_letter)    
-            
+		    
         if keyp(KEYS[current_letter])==true then
 			trace("current letters  "..current_letter)
 			trace("current position  "..current_treasure.current_pos)
@@ -171,7 +169,15 @@
 		--Draw rectangle
 		rect (8,8,204,104,1)
 		rect (10,10,200,100,0) 
-		print (current_treasure.word, 15, 15, TEXT_UNTYPED, true, 3 )
+		local typed_length = 0
+		if current_treasure.current_pos~=1 then
+			local typed_text = current_treasure.word:sub(1,current_treasure.current_pos-1)
+			print (typed_text, 15, 15, TEXT_TYPED, true, 3 )
+			typed_length = string.len(typed_text)
+		end
+		local untyped_text = current_treasure.word:sub(current_treasure.current_pos,string.len(current_treasure.word))
+		print (untyped_text, 15+typed_length*20, 15, TEXT_UNTYPED, true, 3 )
+	
 	end
 	
     --draw screen graphics
