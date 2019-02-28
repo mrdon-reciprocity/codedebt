@@ -9,13 +9,13 @@
     KEYS={
     	["A"]=1,
     	["B"]=2,
-    	["C"]=3
-    	["D"]=4
-    	["E"]=5
-    	["F"]=6
-    	["G"]=7
-    	["H"]=8
-    	["I"]=9
+    	["C"]=3,
+    	["D"]=4,
+    	["E"]=5,
+    	["F"]=6,
+    	["G"]=7,
+    	["H"]=8,
+    	["I"]=9,
     	["J"]=10,
     	["K"]=11,
     	["L"]=12,
@@ -55,28 +55,58 @@
     	["/"]=47,
     	[" "]=48
 	}
+
+	
     
     --sprite vars
     FLOOR=1  --the floor sprite will be stored in the 1 slot
     WALL=224  --the wall sprite will be stored in the 17 slot
     DUDE=16  --the player sprite will be stored in the 33 slot
-       
+	TREASURE=194 -- the treasure sprite will be stored in the __ slot
+	
     --game constants
     SCREEN_X=29
     SCREEN_Y=16
     MOVEMENT_SPEED=15
     MOVEMENT_DELAY=0
-    
-    --player object
-    p={
-     x=3, --center of screen x
-     y=1} --center of screen y
-    	
+	
+	--colors
+	TEXT_TYPED = 8
+	TEXT_UNTYPED = 13
+   
+		
+	possible_states = {
+		title=1,
+		chasing=2,
+		typing=3
+	}
+	current_state= possible_states.chasing
+	current_treasure=nil
     --FUNCTIONS    
 
+	function start_game()
+		trace("starting game")
+		 --player object
+		 p={
+			x=3, --center of screen x
+			y=1,
+			score=0
+		} --center of screen y
+		
+		treasure = {
+			x=3,
+			y=2,
+			word="something",
+			current_pos=0,
+			score=100,
+			tile=TREASURE,
+			consumed=false
+		}
+	end
+	
     --player movement
     --we'll use the btnp() function to detect a single button press
-    function move()
+    function move_chasing()
     	x=p.x
     	y=p.y
         --player presses "up"
@@ -98,24 +128,69 @@
     	if btnp(3,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          x=p.x+1 
         end
-
-        if mget(x,y)==FLOOR then
+		next_tile = mget(x,y) 
+		if treasure.x==x and treasure.y==y and treasure.consumed==false then 
+			trace("treasure")
+			current_state = possible_states.typing
+			current_treasure = treasure
+		elseif next_tile==FLOOR then
         	p.x=x
-        	p.y=y
-        end
+			p.y=y
+		else
+			trace(next_tile)
+		end
+		
     end
-    
+	
+	function process_typing()
+		local current_letter = current_treasure.word:sub(current_treasure.current_pos,1)
+		if keyp(19)==true then
+			trace("current letters  "..current_letter)
+			trace("current position  "..current_treasure.current_pos)
+			trace("key is current letter  ")
+			trace(keyp(19))
+			current_treasure.current_pos = current_treasure.current_pos+1
+
+			
+			if current_treasure.current_pos==string.len(current_treasure.word)-1 then
+				trace("end of consumption")
+				current_treasure.consumed=true
+				p.score=p.score+current_treasure.score
+				current_treasure=nil
+				current_state = possible_states.chasing
+			end 
+		end
+
+	end
+
+	function draw_typing()
+		--Draw rectangle
+		rect (8,8,204,104,1)
+		rect (10,10,200,100,0) 
+		print (current_treasure.word, 15, 15, TEXT_UNTYPED, true, 3 )
+	end
+	
     --draw screen graphics
-    function draw()
+    function draw_chasing()
      cls()
      map(0,0,SCREEN_X+1,SCREEN_Y+1)
 	
      --multiplying the player coors by 8 (the size of the map cells)
      --gives us grid movement
-     spr(DUDE,p.x*8,p.y*8,8)
+	 spr(DUDE,p.x*8,p.y*8,8)
+	 if treasure.consumed==false then
+		 spr(treasure.tile,treasure.x*8,treasure.y*8,8)
+	 end
     end
-    
-    function TIC()
-        move()
-    	draw()
+	
+	start_game()
+	function TIC()
+		
+		if current_state==possible_states.chasing then
+			move_chasing()
+			draw_chasing()
+		elseif current_state==possible_states.typing then
+			process_typing()
+			draw_typing()
+		end
     end
