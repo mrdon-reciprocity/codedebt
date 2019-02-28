@@ -14,6 +14,8 @@
     --game constants
     SCREEN_X=29
     SCREEN_Y=16
+    MOVEMENT_SPEED=15
+    MOVEMENT_DELAY=60
     
     --player object
     p={
@@ -28,22 +30,22 @@
     	x=p.x
     	y=p.y
         --player presses "up"
-        if btnp(0) then 
+        if btnp(0,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          y=p.y-1 
         
         end
         --player presses "down"
-    	if btnp(1) then 
+    	if btnp(1,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          y=p.y+1 
         
         end
         --player presses "left"
-    	if btnp(2) then 
+    	if btnp(2,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          x=p.x-1 
         
         end
         --player presses "right"
-    	if btnp(3) then 
+    	if btnp(3,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          x=p.x+1 
         end
 
