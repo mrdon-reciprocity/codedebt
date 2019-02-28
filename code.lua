@@ -137,8 +137,6 @@
 		elseif next_tile==FLOOR then
         	p.x=x
 			p.y=y
-		else
-			trace(next_tile)
 		end
 		
     end
@@ -147,16 +145,13 @@
 		local current_letter = string.upper(current_treasure.word:sub(current_treasure.current_pos,current_treasure.current_pos))
 		    
         if keyp(KEYS[current_letter])==true then
-			trace("current letters  "..current_letter)
-			trace("current position  "..current_treasure.current_pos)
-			trace("key is current letter  ")
-			trace("lah"..KEYS[current_letter])
 			current_treasure.current_pos = current_treasure.current_pos+1
 
 			
 			if current_treasure.current_pos==string.len(current_treasure.word)+1 then
-				trace("end of consumption")
 				current_treasure.consumed=true
+                p.x=current_treasure.x
+                p.y=current_treasure.y
 				p.score=p.score+current_treasure.score
 				current_treasure=nil
 				current_state = possible_states.chasing
