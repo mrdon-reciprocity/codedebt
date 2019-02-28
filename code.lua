@@ -8,8 +8,8 @@
     
     --sprite vars
     FLOOR=1  --the floor sprite will be stored in the 1 slot
-    WALL=17  --the wall sprite will be stored in the 17 slot
-    DUDE=33  --the player sprite will be stored in the 33 slot
+    WALL=224  --the wall sprite will be stored in the 17 slot
+    DUDE=16  --the player sprite will be stored in the 33 slot
     
     --game constants
     SCREEN_X=29
@@ -17,8 +17,8 @@
     
     --player object
     p={
-     x=SCREEN_X//2, --center of screen x
-     y=SCREEN_Y//2} --center of screen y
+     x=3, --center of screen x
+     y=1} --center of screen y
     	
     --FUNCTIONS    
 
