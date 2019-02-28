@@ -133,6 +133,7 @@
 			trace("treasure")
 			current_state = possible_states.typing
 			current_treasure = treasure
+			music(0,0,-1, false)
 		elseif next_tile==FLOOR then
         	p.x=x
 			p.y=y
