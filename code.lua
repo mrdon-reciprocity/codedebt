@@ -78,6 +78,7 @@
     SCORE_LINE = 2
     SCORE_TIMELOW = 6
    
+    --math.randomseed(os.time())
 		
 	possible_states = {
 		menu=1,
@@ -98,15 +99,29 @@
 			score=0
 		} --center of screen y
 		
-		treasure = {
-			x=3,
-			y=2,
-			word="something",
-			current_pos=1,
-			score=100,
-			tile=TREASURE,
-			consumed=false
-		}
+        
+
+        treasures = {}
+        for x=1,10,1 do
+            local tx = 0
+            local ty = 0
+            while tx == 0 do
+                tx = math.random(SCREEN_X)
+                ty = math.random(SCREEN_Y)
+                if mget(tx, ty) ~= FLOOR then
+                    tx = 0
+                end
+            end
+            treasures[x] =  {
+                x=tx,
+                y=ty,
+                word="something",
+                current_pos=1,
+                score=100,
+                tile=TREASURE,
+                consumed=false
+            }
+        end
 
         game_start_time = time()
         current_state = possible_states.chasing
@@ -140,16 +155,25 @@
          x=p.x+1 
         end
 		next_tile = mget(x,y) 
-		if treasure.x==x and treasure.y==y and treasure.consumed==false then 
-			trace("treasure")
-			current_state = possible_states.typing
-			current_treasure = treasure
-			music(0,0,-1, false)
-		elseif next_tile==FLOOR then
-        	p.x=x
-			p.y=y
+
+        local found=false
+        for pos=1,#treasures,1 do
+            local treasure = treasures[pos]
+    		if treasure.x==x and treasure.y==y and treasure.consumed==false then 
+    			trace("treasure")
+    			current_state = possible_states.typing
+    			current_treasure = treasure
+    			music(0,0,-1, false)
+                found=true
+    		end
 		end
-		
+
+        if found == false then
+            if next_tile==FLOOR then
+                p.x=x
+                p.y=y
+            end
+        end
     end
 	
 	function process_typing()
@@ -236,9 +260,13 @@
      --multiplying the player coors by 8 (the size of the map cells)
      --gives us grid movement
 	 spr(DUDE,p.x*8,p.y*8,8)
-	 if treasure.consumed==false then
-		 spr(treasure.tile,treasure.x*8,treasure.y*8,8)
-	 end
+
+     for pos=1,#treasures,1 do
+         local treasure = treasures[pos]
+    	 if treasure.consumed==false then
+    		 spr(treasure.tile,treasure.x*8,treasure.y*8,8)
+    	 end
+     end
 
      local secs_in_game = math.floor((time() - game_start_time) / 1000)
      local time_left = 0
