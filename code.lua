@@ -97,7 +97,7 @@
 			x=3,
 			y=2,
 			word="something",
-			current_pos=0,
+			current_pos=1,
 			score=100,
 			tile=TREASURE,
 			consumed=false
@@ -144,8 +144,9 @@
     end
 	
 	function process_typing()
-		local current_letter = string.upper(current_treasure.word:sub(current_treasure.current_pos,current_treasure.current_pos+1))
+		local current_letter = string.upper(current_treasure.word:sub(current_treasure.current_pos,current_treasure.current_pos))
 		trace("current position  "..current_treasure.current_pos)
+        trace("current letters  "..current_letter)    
             
         if keyp(KEYS[current_letter])==true then
 			trace("current letters  "..current_letter)
@@ -155,7 +156,7 @@
 			current_treasure.current_pos = current_treasure.current_pos+1
 
 			
-			if current_treasure.current_pos==string.len(current_treasure.word)-1 then
+			if current_treasure.current_pos==string.len(current_treasure.word)+1 then
 				trace("end of consumption")
 				current_treasure.consumed=true
 				p.score=p.score+current_treasure.score
@@ -166,7 +167,7 @@
 
 	end
 
-	function draw_typing()
+	function draw_typing()        
 		--Draw rectangle
 		rect (8,8,204,104,1)
 		rect (10,10,200,100,0) 
@@ -194,6 +195,8 @@
 			draw_chasing()
 		elseif current_state==possible_states.typing then
 			process_typing()
-			draw_typing()
+            if current_state == possible_states.typing then
+			   draw_typing()
+            end
 		end
     end
