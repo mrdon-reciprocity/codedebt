@@ -25,24 +25,31 @@
     --player movement
     --we'll use the btnp() function to detect a single button press
     function move()
+    	x=p.x
+    	y=p.y
         --player presses "up"
         if btnp(0) then 
-         p.y=p.y-1 
+         y=p.y-1 
         
         end
         --player presses "down"
     	if btnp(1) then 
-         p.y=p.y+1 
+         y=p.y+1 
         
         end
         --player presses "left"
     	if btnp(2) then 
-         p.x=p.x-1 
+         x=p.x-1 
         
         end
         --player presses "right"
     	if btnp(3) then 
-         p.x=p.x+1 
+         x=p.x+1 
+        end
+
+        if mget(x,y)~=224 then
+        	p.x=x
+        	p.y=y
         end
     end
     
@@ -53,10 +60,10 @@
 	
      --multiplying the player coors by 8 (the size of the map cells)
      --gives us grid movement
-     spr(DUDE,p.x*8,p.y*8,0)
+     spr(DUDE,p.x*8,p.y*8,8)
     end
     
     function TIC()
-     move()
+        move()
     	draw()
     end
