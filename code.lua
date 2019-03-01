@@ -63,7 +63,8 @@
     WALL=224  --the wall sprite will be stored in the 17 slot
     DUDE=16  --the player sprite will be stored in the 33 slot
 	TREASURE=194 -- the treasure sprite will be stored in the __ slot
-	EXIT=196 -- exit door end game
+    EXIT=196 -- exit door end game
+    BAG_GUY=96
 
     --game constants
     SCREEN_X=29
@@ -147,7 +148,36 @@
 
         game_start_time = time()
         current_state = possible_states.chasing
-	end
+        generate_bad_guys()
+    end
+    
+    function generate_bad_guys()
+        bad_guys={}
+        for x=1,5,1 do
+            local bx = 0
+            local by = 0
+            while bx == 0 do
+                bx = math.random(SCREEN_X)
+                by = math.random(SCREEN_Y)
+                if mget(bx, by) ~= FLOOR then
+                    bx = 0
+                end
+                for pos=1,#treasures,1 do
+                    local treasure = treasures[pos]
+                    if treasure.x==bx and treasure.y==by then 
+                        bx = 0
+                    end
+                end
+            end
+            bad_guys[x] =  {
+                x=bx,
+                y=by,
+                score=100,
+                tile=BAG_GUY,
+                consumed=false
+            }
+        end
+    end
 	
     --player movement
     --we'll use the btnp() function to detect a single button press
@@ -192,6 +222,16 @@
     			current_state = possible_states.typing
     			current_treasure = treasure
     			music(0,0,-1, false)
+                found=true
+    		end
+        end
+        
+        for pos=1,#bad_guys,1 do
+            local bad_guy = bad_guys[pos]
+    		if bad_guy.x==x and bad_guy.y==y and bad_guy.consumed==false then 
+                music(0,0,-1, false)
+                bad_guy.consumed=true
+                p.score = p.score - bad_guy.score
                 found=true
     		end
 		end
@@ -358,6 +398,7 @@
     		 spr(treasure.tile,treasure.x*8,treasure.y*8,8)
     	 end
      end
+     
 
      local secs_in_game = math.floor((time() - game_start_time) / 1000)
      local time_left = 0
@@ -372,7 +413,16 @@
 	 if time_left==0 then
 		current_state=possible_states.gameover
 	 end
-	 
+     
+     if time_left<=28 then
+        for pos=1,#bad_guys,1 do
+            local bad_guy = bad_guys[pos]
+            if bad_guy.consumed==false then
+                local bad_guy = bad_guys[pos]
+                spr(bad_guy.tile,bad_guy.x*8,bad_guy.y*8,8)
+            end
+        end
+    end
 	 print("Time left: "..time_left, 10, WINDOW_Y - 10, timer_color, false, 1)
      print("Score: "..p.score, WINDOW_X/2, WINDOW_Y - 10, SCORE_LINE, false, 1)
     end
