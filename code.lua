@@ -244,7 +244,7 @@
 		if found == false then
 			if exit_door.x==x and exit_door.y==y then 
 				current_state= possible_states.gameover
-                music(2, 0, -1, false)
+                music(2, 0, -1, true)
 				p.score= p.score+500
 			elseif next_tile==FLOOR then
                 p.x=x
