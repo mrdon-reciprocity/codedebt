@@ -164,8 +164,9 @@ function suggested_path(start, goal)
     while (#open_set > 0) do  --while not empty
         --  find the node in openSet having the lowest fScore[] value
         current = node_min_f_score(f_scores, open_set)  -- TODO: use priority queue!
-        if current == goal
+        if current == goal do
             return reconstruct_path(came_from, current)
+        end
 
         open_set[current] = nil  -- remove from open set
         closed_set[current] = true  -- add to closed set
