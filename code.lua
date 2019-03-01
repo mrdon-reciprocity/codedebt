@@ -63,7 +63,8 @@
     WALL=224  --the wall sprite will be stored in the 17 slot
     DUDE=16  --the player sprite will be stored in the 33 slot
 	TREASURE=194 -- the treasure sprite will be stored in the __ slot
-	
+	EXIT=196 -- exit door end game
+
     --game constants
     SCREEN_X=29
     SCREEN_Y=16
@@ -88,6 +89,13 @@
 	}
 	current_state= possible_states.menu
 	current_treasure=nil
+
+	exit_door = {
+		x=28,
+		y=3,
+		tile=EXIT
+	}
+
     --FUNCTIONS    
 
 	function start_game()
@@ -168,8 +176,10 @@
     		end
 		end
 
-        if found == false then
-            if next_tile==FLOOR then
+		if found == false then
+			if exit_door.x==x and exit_door.y==y then 
+				current_state= possible_states.gameover
+			elseif next_tile==FLOOR then
                 p.x=x
                 p.y=y
             end
@@ -208,6 +218,50 @@
 		print (untyped_text, 15+typed_length*20, 15, TEXT_UNTYPED, true, 3 )
 	
 	end
+
+	function game_over_menu()
+        game_over_menu_cursor = 1
+        game_over_menu_options = {"Play again", "Quit"}
+    end
+	
+	function draw_game_over()
+        cls()
+        for x=1,14,2 do
+            rectb(2+x, 1+x, 240-4-x, 136-2-x,x)
+        end
+
+        local offset = 40
+		print("Game Over", 30, 30, TEXT_TYPED, false, 3)
+		print("Your score: "..p.score, 30, 50, TEXT_TYPED, false, 1)
+        for k, v in pairs(game_over_menu_options) do
+            if k == game_over_menu_cursor then
+                print(v, 50, offset * k + 30, TEXT_TYPED, false, 2)
+            else
+                print(v, 50, offset * k + 30, TEXT_UNTYPED, false, 1.5)
+            end
+        end
+	end
+
+	function game_over_process_menu()
+        if btnp(0) then 
+            game_over_menu_cursor = game_over_menu_cursor - 1
+            if game_over_menu_cursor < 1 then
+                game_over_menu_cursor = #menu_game_over_menu_options
+            end
+        elseif btnp(1) then
+            game_over_menu_cursor = game_over_menu_cursor + 1
+            if game_over_menu_cursor > #game_over_menu_options then 
+                game_over_menu_cursor = 1
+            end
+        elseif btnp(4) or keyp(50)then
+			if game_over_menu_cursor == 1 then
+				current_state = possible_states.chasing
+                start_game()
+            elseif game_over_menu_cursor == 2 then
+                exit()
+            end
+        end
+    end
 
     function start_menu()
         menu_cursor = 1
@@ -290,6 +344,7 @@
     end
 	
 	start_menu()
+	game_over_menu()
 	function TIC()
 		
         if current_state == possible_states.menu then
@@ -302,6 +357,9 @@
 			process_typing()
             if current_state == possible_states.typing then
 			   draw_typing()
-            end
+			end
+		elseif current_state == possible_states.gameover then
+			game_over_process_menu()
+			draw_game_over()
 		end
     end
