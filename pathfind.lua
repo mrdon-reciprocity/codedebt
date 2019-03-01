@@ -1,8 +1,9 @@
 local INFINITY = 5e+20  -- good enough for our needs
 local TOP = 1
-local BOTTOM = 50  -- TODO: adjust!
+local BOTTOM = 16  -- MAX Y
 local LEFT = 1
-local RIGHT = 250  -- TODO: ajdust! MAX_X
+local RIGHT = 29  -- MAX X
+local WALL = 224
 
 
 local function reverse_array(arr)
@@ -95,26 +96,34 @@ local function walkable_neighbors(tile)
 
     -- upper neighbor
     if tile.y > TOP then
-        neighbor {x = tile.x , y = tile.y -1}
-        neighbors[neighbor] = true  -- TODO: if not WALL
+        neighbor = {x = tile.x , y = tile.y -1}
+        if mget(neighbor.x, neighbor.y) ~= WALL then
+            neighbors[neighbor] = true  -- TODO: if not WALL
+        end
     end
 
     -- lower neighbor
     if tile.y < BOTTOM then
         neighbor = {x = tile.x , y = tile.y + 1}
-        neighbors[neighbor] = true  -- TODO: if not WALL
+        if mget(neighbor.x, neighbor.y) ~= WALL then
+            neighbors[neighbor] = true  -- TODO: if not WALL
+        end
     end
 
     -- left neightbor
     if tile.x > LEFT then
         neighbor = {x = tile.x - 1 , y = tile.y}
-        neighbors[neighbor] = true  -- TODO: if not WALL
+        if mget(neighbor.x, neighbor.y) ~= WALL then
+            neighbors[neighbor] = true  -- TODO: if not WALL
+        end
     end
 
     -- right neighbor
     if tile.x < RIGHT then
         neighbor = {x = tile.x + 1 , y = tile.y}
-        neighbors[neighbor] = true  -- TODO: if not WALL
+        if mget(neighbor.x, neighbor.y) ~= WALL then
+            neighbors[neighbor] = true  -- TODO: if not WALL
+        end
     end
 
     return neighbors
