@@ -1,11 +1,11 @@
-INFINITY = 5e+20  -- good enough for our needs
-TOP = 0
-BOTTOM = 50  -- TODO: adjust!
-LEFT = 0
-RIGHT = 250  -- TODO: ajdust! MAX_X
+local INFINITY = 5e+20  -- good enough for our needs
+local TOP = 1
+local BOTTOM = 50  -- TODO: adjust!
+local LEFT = 1
+local RIGHT = 250  -- TODO: ajdust! MAX_X
 
 
-function reverse_array(arr)
+local function reverse_array(arr)
 	local i, j = 1, #arr
 	while i < j do
 		arr[i], arr[j] = arr[j], arr[i]
@@ -15,7 +15,7 @@ function reverse_array(arr)
 end
 
 
-function reconstruct_path(came_from, node)
+local function reconstruct_path(came_from, node)
     --[[
     Reconstruct the path that lead to `node` and return it
     as an table in REVERSED order
@@ -47,7 +47,7 @@ function reconstruct_path(came_from, node)
 end
 
 
-function euclid_distance(p1, p2)
+local function euclid_distance(p1, p2)
     -- return the Euclidian distance between two points
     local dx = p2.x - p1.x
     local dy = p2.y - p1.y
@@ -55,7 +55,7 @@ function euclid_distance(p1, p2)
 end
 
 
-function node_min_f_score(f_scores, nodes)
+local function node_min_f_score(f_scores, nodes)
     -- Return the node with the lowest f_score
     --
     -- Args:
@@ -84,7 +84,7 @@ function node_min_f_score(f_scores, nodes)
 end
 
 
-function walkable_neighbors(tile)
+local function walkable_neighbors(tile)
     -- Find and return all walkable (non-wall) neighbors of a given tile
     --
     -- Args:
