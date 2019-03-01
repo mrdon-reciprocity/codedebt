@@ -76,6 +76,7 @@
 	--colors
 	TEXT_TYPED = 8
 	TEXT_UNTYPED = 13
+	TEXT_BAD = 9
     SCORE_LINE = 2
     SCORE_TIMELOW = 6
    
@@ -111,11 +112,11 @@
 
         treasures = {}
 	treasure_words = {
-		"Action Buttons",
-		"Fix bug 523",
-		"Add Reccurrence",
+		"ServiceNow",
+		"Blocker",
+		"Reccurrence",
 		"Fix bug",
-		"Make coffee",
+		"Coffee",
 		"Fix bug",
 		"Fix bug",
 		"Fix bug",
@@ -192,7 +193,8 @@
 		if found == false then
 			if exit_door.x==x and exit_door.y==y then 
 				current_state= possible_states.gameover
-				music(2, 0, -1, false)
+                music(2, 0, -1, false)
+				p.score= p.score+500
 			elseif next_tile==FLOOR then
                 p.x=x
                 p.y=y
@@ -246,8 +248,14 @@
             rectb(2+x, 1+x, 240-4-x, 136-2-x,x)
         end
 
-        local offset = 40
-		print("Game Over", 30, 30, TEXT_TYPED, false, 3)
+		local offset = 40
+		local text_color = TEXT_TYPED
+		local text_ = "Success"
+		if p.score <= 600 then
+			text_color = TEXT_BAD
+			text_ = "No release"
+		end
+		print(text_, 30, 30, text_color, false, 3)
 		print("Your score: "..p.score, 30, 50, TEXT_TYPED, false, 1)
         for k, v in pairs(game_over_menu_options) do
             if k == game_over_menu_cursor then
@@ -347,15 +355,19 @@
 
      local secs_in_game = math.floor((time() - game_start_time) / 1000)
      local time_left = 0
-     if secs_in_game < 10 then
-        time_left = 10 - secs_in_game
+     if secs_in_game < 30 then
+        time_left = 30 - secs_in_game
      end
      local timer_color = SCORE_LINE
      if time_left < 4 then
         timer_color = SCORE_TIMELOW
-     end
-
-     print("Time left: "..time_left, 10, WINDOW_Y - 10, timer_color, false, 1)
+	 end
+	 
+	 if time_left==0 then
+		current_state=possible_states.gameover
+	 end
+	 
+	 print("Time left: "..time_left, 10, WINDOW_Y - 10, timer_color, false, 1)
      print("Score: "..p.score, WINDOW_X/2, WINDOW_Y - 10, SCORE_LINE, false, 1)
     end
 	
