@@ -110,6 +110,19 @@
         
 
         treasures = {}
+	treasure_words = {
+		"Action Buttons",
+		"Fix bug 523",
+		"Add Reccurrence",
+		"Fix bug",
+		"Make coffee",
+		"Fix bug",
+		"Fix bug",
+		"Fix bug",
+		"Fix bug",
+		"Fix bug",
+		"Fix bug"
+	}
         for x=1,10,1 do
             local tx = 0
             local ty = 0
@@ -123,7 +136,7 @@
             treasures[x] =  {
                 x=tx,
                 y=ty,
-                word="something",
+                word=treasure_words[x],
                 current_pos=1,
                 score=100,
                 tile=TREASURE,
@@ -199,6 +212,7 @@
 				p.score=p.score+current_treasure.score
 				current_treasure=nil
 				current_state = possible_states.chasing
+				music(1, 0, -1, false)
 			end 
 		end
 
@@ -211,6 +225,7 @@
 		local typed_length = 0
 		if current_treasure.current_pos~=1 then
 			local typed_text = current_treasure.word:sub(1,current_treasure.current_pos-1)
+			
 			print (typed_text, 15, 15, TEXT_TYPED, true, 3 )
 			typed_length = string.len(typed_text)
 		end
