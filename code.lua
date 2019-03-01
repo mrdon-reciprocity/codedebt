@@ -84,6 +84,8 @@
 	TEXT_BAD = 9
     SCORE_LINE = 2
     SCORE_TIMELOW = 6
+
+    GAME_LENGTH = 5
    
     --math.randomseed(os.time())
 		
@@ -100,11 +102,11 @@
     high_scores = {}
     high_scores[1] = {
         name="AAA",
-        score="2000"
+        score=2000
     }
     high_scores[2] = {
         name="BBB",
-        score="1000"
+        score=1000
     }
 
 	exit_door = {
@@ -141,7 +143,7 @@
     		"Audit Wizard",
     		"Fix bug"
     	}
-        for x=1,10,1 do
+        for x=1,15,1 do
             local tx = 0
             local ty = 0
             while tx == 0 do
@@ -154,7 +156,7 @@
             treasures[x] =  {
                 x=tx,
                 y=ty,
-                word=treasure_words[x],
+                word=treasure_words[math.random(#treasure_words)],
                 current_pos=1,
                 current_char_code=KEYS["_"],
                 score=100,
@@ -357,6 +359,24 @@
             p.name = p.name..KEYS_BY_CODE[game_over_high_score_char_pos]
             if #p.name == 3 then
                 game_over_high_score_char_pos = KEYS[" "]
+                local score = {
+                    name=p.name,
+                    score=p.score
+                }
+                local added = false
+                for pos=1,#high_scores,1 do
+                    if added == false and p.score >= high_scores[pos].score then
+                        table.insert(high_scores, pos, score)
+                        added = true
+                    end
+                end
+                if added == false then 
+                    high_scores[#high_scores + 1] = score
+                end
+
+                if #high_scores > 6 then
+                    table.remove(high_scores)
+                end
                 start_highscores()
             end
         end
@@ -370,13 +390,13 @@
         --Draw rectangle
         rect (15,15,WINDOW_X-30, WINDOW_Y-30,0) 
 
-        print ("High Scores", 25, 15, TEXT_TYPED, true, 2)
+        print ("High Scores", 25, 17, TEXT_TYPED, true, 2)
 
         for x=1,#high_scores,1 do
-            print(high_scores[x].name.." -- "..high_scores[x].score, 20, 20+15*x, TEXT_UNTYPED)
+            print(high_scores[x].name.." -- "..high_scores[x].score, 30, 20+15*x, TEXT_UNTYPED)
         end
 
-        print("Return to Menu", 25, 100, TEXT_TYPED, true, 2)       
+        print("Return to Menu", 25, 120, TEXT_TYPED, true, 1.5)       
     end
 
     function process_highscores()
@@ -406,7 +426,7 @@
         end
 
         local offset = 25
-        print("Release chasing", 30, 30, TEXT_TYPED, false, 3)
+        print("Release chasing", 30, 30, TEXT_TYPED, false, 2)
         for k, v in pairs(menu_options) do
             if k == menu_cursor then
                 print(v, 50, offset * k + 30, TEXT_TYPED, false, 2)
@@ -457,19 +477,20 @@
 
      local secs_in_game = math.floor((time() - game_start_time) / 1000)
      local time_left = 0
-     if secs_in_game < 3 then
-        time_left = 3 - secs_in_game
+     if secs_in_game < GAME_LENGTH then
+        time_left = GAME_LENGTH - secs_in_game
      end
      local timer_color = SCORE_LINE
-     if time_left < 4 then
+     if time_left < 10 then
         timer_color = SCORE_TIMELOW
 	 end
 	 
 	 if time_left==0 then
+        p.score = 0
 		current_state=possible_states.gameover
 	 end
      
-     if time_left<=28 then
+     if time_left<=GAME_LENGTH - 5 then
         for pos=1,#bad_guys,1 do
             local bad_guy = bad_guys[pos]
             if bad_guy.consumed==false then
