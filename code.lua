@@ -235,11 +235,11 @@
 		if current_treasure.current_pos~=1 then
 			local typed_text = current_treasure.word:sub(1,current_treasure.current_pos-1)
 			
-			print (typed_text, 15, 15, TEXT_TYPED, true, 3 )
+			print (typed_text, 15, 15, TEXT_TYPED, true, 2 )
 			typed_length = string.len(typed_text)
 		end
 		local untyped_text = current_treasure.word:sub(current_treasure.current_pos,string.len(current_treasure.word))
-		print (untyped_text, 15+typed_length*20, 15, TEXT_UNTYPED, true, 3 )
+		print (untyped_text, 15+typed_length*20, 15, TEXT_UNTYPED, true, 2 )
 	
 	end
 
