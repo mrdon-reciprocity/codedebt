@@ -102,11 +102,11 @@
     high_scores = {}
     high_scores[1] = {
         name="AAA",
-        score=2000
+        score=500
     }
     high_scores[2] = {
         name="BBB",
-        score=1000
+        score=200
     }
 
 	exit_door = {
@@ -151,6 +151,13 @@
                 ty = math.random(SCREEN_Y)
                 if mget(tx, ty) ~= FLOOR or (tx==p.x and ty==p.y) then
                     tx = 0
+                else 
+                    for x=1,#treasures,1 do
+                        local t = treasures[x]
+                        if t.x == tx and t.y == ty then
+                            tx = 0
+                        end
+                    end
                 end
             end
             treasures[x] =  {
