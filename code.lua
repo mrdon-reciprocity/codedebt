@@ -374,7 +374,7 @@
         end
 
         local offset = 40
-        print("Code Debt", 30, 30, TEXT_TYPED, false, 3)
+        print("Release chasing", 30, 30, TEXT_TYPED, false, 2)
         for k, v in pairs(menu_options) do
             if k == menu_cursor then
                 print(v, 50, offset * k + 30, TEXT_TYPED, false, 2)
