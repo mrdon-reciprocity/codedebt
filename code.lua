@@ -290,18 +290,18 @@
 		rect (8,8,204,104,1)
 		rect (10,10,200,100,0) 
 
-        print (current_treasure.word, 15, 15, TEXT_UNTYPED, true, 3)       
+        print (current_treasure.word, 15, 15, TEXT_UNTYPED, true, 2)       
 
 
 		local typed_length = 0
 		if current_treasure.current_pos~=1 then
 			local typed_text = current_treasure.word:sub(1,current_treasure.current_pos-1)
 			
-			print (typed_text, 15, 35, TEXT_TYPED, true, 3 )
+			print (typed_text, 15, 35, TEXT_TYPED, true, 2)
 			typed_length = string.len(typed_text)
 		end
 
-        print(KEYS_BY_CODE[current_treasure.current_char_code], 15 + typed_length * 18, 35, TEXT_UNTYPED, true, 3)
+        print(KEYS_BY_CODE[current_treasure.current_char_code], 15 + typed_length * 12, 35, TEXT_UNTYPED, true, 2)
 	end
 
 	function game_over_menu()
