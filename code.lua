@@ -85,7 +85,7 @@
     SCORE_LINE = 2
     SCORE_TIMELOW = 6
 
-    GAME_LENGTH = 3
+    GAME_LENGTH = 45
    
     --math.randomseed(os.time())
 		
@@ -292,7 +292,8 @@
             current_treasure.consumed=true
             p.x=current_treasure.x
             p.y=current_treasure.y
-            p.score=p.score+current_treasure.score
+	    rand_plus =  math.random(-5, 5)
+            p.score=p.score+current_treasure.score + rand_plus
             current_treasure=nil
             current_state = possible_states.chasing
             music(1, 0, -1, false)
