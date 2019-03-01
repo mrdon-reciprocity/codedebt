@@ -85,7 +85,7 @@
     SCORE_LINE = 2
     SCORE_TIMELOW = 6
 
-    GAME_LENGTH = 45
+    GAME_LENGTH = 3
    
     --math.randomseed(os.time())
 		
@@ -357,28 +357,35 @@
             end
         elseif btnp(4) or keyp(50) then
             p.name = p.name..KEYS_BY_CODE[game_over_high_score_char_pos]
-            if #p.name == 3 then
-                game_over_high_score_char_pos = KEYS[" "]
-                local score = {
-                    name=p.name,
-                    score=p.score
-                }
-                local added = false
-                for pos=1,#high_scores,1 do
-                    if added == false and p.score >= high_scores[pos].score then
-                        table.insert(high_scores, pos, score)
-                        added = true
-                    end
+        else
+            for k, v in pairs(KEYS) do
+                if keyp(v) then
+                    p.name = p.name..k
                 end
-                if added == false then 
-                    high_scores[#high_scores + 1] = score
-                end
-
-                if #high_scores > 6 then
-                    table.remove(high_scores)
-                end
-                start_highscores()
             end
+        end
+
+        if #p.name == 3 then
+            game_over_high_score_char_pos = KEYS[" "]
+            local score = {
+                name=p.name,
+                score=p.score
+            }
+            local added = false
+            for pos=1,#high_scores,1 do
+                if added == false and p.score >= high_scores[pos].score then
+                    table.insert(high_scores, pos, score)
+                    added = true
+                end
+            end
+            if added == false then 
+                high_scores[#high_scores + 1] = score
+            end
+
+            if #high_scores > 6 then
+                table.remove(high_scores)
+            end
+            start_highscores()
         end
     end
 
