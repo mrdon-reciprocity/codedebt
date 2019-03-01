@@ -68,14 +68,14 @@
     DUDE=16  --the player sprite will be stored in the 33 slot
 	TREASURE=194 -- the treasure sprite will be stored in the __ slot
     EXIT=196 -- exit door end game
-    BAG_GUY=96
+    BAD_GUY=96
 
     --game constants
     SCREEN_X=29
     SCREEN_Y=16
     WINDOW_X=240
     WINDOW_Y=136
-    MOVEMENT_SPEED=15
+    MOVEMENT_SPEED=10
     MOVEMENT_DELAY=0
 	
 	--colors
@@ -91,10 +91,21 @@
 		menu=1,
 		chasing=2,
 		typing=3,
-        gameover=4        
+        gameover=4,
+        highscores=5        
 	}
 	current_state= possible_states.menu
 	current_treasure=nil
+
+    high_scores = {}
+    high_scores[1] = {
+        name="AAA",
+        score="2000"
+    }
+    high_scores[2] = {
+        name="BBB",
+        score="1000"
+    }
 
 	exit_door = {
 		x=28,
@@ -110,25 +121,26 @@
 		 p={
 			x=3, --center of screen x
 			y=1,
-			score=0
+			score=0,
+            name=""
 		} --center of screen y
 		
         
 
         treasures = {}
-	treasure_words = {
-		"ServiceNow",
-		"Blocker",
-		"Reccurrence",
-		"Fix bug",
-		"Coffee",
-		"Meeting",
-		"Another meeting",
-		"Vulnerability",
-		"GitHub is down",
-		"Audit Wizard",
-		"Fix bug"
-	}
+    	treasure_words = {
+    		"ServiceNow",
+    		"Blocker",
+    		"Reccurrence",
+    		"Fix bug",
+    		"Coffee",
+    		"Meeting",
+    		"Another meeting",
+    		"Vulnerability",
+    		"GitHub is down",
+    		"Audit Wizard",
+    		"Fix bug"
+    	}
         for x=1,10,1 do
             local tx = 0
             local ty = 0
@@ -178,7 +190,7 @@
                 x=bx,
                 y=by,
                 score=100,
-                tile=BAG_GUY,
+                tile=BAD_GUY,
                 consumed=false
             }
         end
@@ -194,8 +206,8 @@
     	y=p.y
         --player presses "up"
         if btnp(0,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
-         y=p.y-1
-	 music(3, 0, -1, false)
+            y=p.y-1
+	        music(3, 0, -1, false)
         
         end
         --player presses "down"
@@ -292,7 +304,6 @@
 
         print (current_treasure.word, 15, 15, TEXT_UNTYPED, true, 2)       
 
-
 		local typed_length = 0
 		if current_treasure.current_pos~=1 then
 			local typed_text = current_treasure.word:sub(1,current_treasure.current_pos-1)
@@ -307,6 +318,8 @@
 	function game_over_menu()
         game_over_menu_cursor = 1
         game_over_menu_options = {"Play again", "Quit"}
+        game_over_high_score_char_pos = KEYS["_"]
+        game_over_high_score_name = ""
     end
 	
 	function draw_game_over()
@@ -324,39 +337,58 @@
 		end
 		print(text_, 30, 30, text_color, false, 3)
 		print("Your score: "..p.score, 30, 50, TEXT_TYPED, false, 1)
-        for k, v in pairs(game_over_menu_options) do
-            if k == game_over_menu_cursor then
-                print(v, 50, offset * k + 30, TEXT_TYPED, false, 2)
-            else
-                print(v, 50, offset * k + 30, TEXT_UNTYPED, false, 1.5)
-            end
-        end
+        print("Enter Your name: "..p.name, 30, 80, TEXT_TYPED, true, 1)
+        print(KEYS_BY_CODE[game_over_high_score_char_pos], 30 + (17 * 6) + string.len(p.name) * 6, 80, TEXT_UNTYPED, true, 1)
 	end
 
 	function game_over_process_menu()
-        if btnp(0) then 
-            game_over_menu_cursor = game_over_menu_cursor - 1
-            if game_over_menu_cursor < 1 then
-                game_over_menu_cursor = #menu_game_over_menu_options
+        
+        if btnp(0, 10, 10) then
+            game_over_high_score_char_pos = game_over_high_score_char_pos + 1
+            if game_over_high_score_char_pos > 48 then
+                game_over_high_score_char_pos = 1
             end
-        elseif btnp(1) then
-            game_over_menu_cursor = game_over_menu_cursor + 1
-            if game_over_menu_cursor > #game_over_menu_options then 
-                game_over_menu_cursor = 1
+        elseif btnp(1, 10, 10) then
+            game_over_high_score_char_pos = game_over_high_score_char_pos - 1
+            if game_over_high_score_char_pos < 1 then
+                game_over_high_score_char_pos = 48
             end
-        elseif btnp(4) or keyp(50)then
-			if game_over_menu_cursor == 1 then
-				current_state = possible_states.chasing
-                start_game()
-            elseif game_over_menu_cursor == 2 then
-                exit()
+        elseif btnp(4) or keyp(50) then
+            p.name = p.name..KEYS_BY_CODE[game_over_high_score_char_pos]
+            if #p.name == 3 then
+                game_over_high_score_char_pos = KEYS[" "]
+                start_highscores()
             end
         end
     end
 
+    function start_highscores()
+        current_state = possible_states.highscores
+    end
+
+    function draw_highscores() 
+        --Draw rectangle
+        rect (15,15,WINDOW_X-30, WINDOW_Y-30,0) 
+
+        print ("High Scores", 25, 15, TEXT_TYPED, true, 2)
+
+        for x=1,#high_scores,1 do
+            print(high_scores[x].name.." -- "..high_scores[x].score, 20, 20+15*x, TEXT_UNTYPED)
+        end
+
+        print("Return to Menu", 25, 100, TEXT_TYPED, true, 2)       
+    end
+
+    function process_highscores()
+        if keyp(48) or keyp(50) or btnp(4) then
+            start_menu()
+        end
+    end
+
+
     function start_menu()
         menu_cursor = 1
-        menu_options = {"Play", "Quit"}
+        menu_options = {"Play", "High Scores", "Quit"}
         current_state = possible_states.menu
     end
 
@@ -373,8 +405,8 @@
             rectb(2+(2*x), 1+(2*x), WINDOW_X-(2*x)-4, WINDOW_Y-(2*x)-2,color)
         end
 
-        local offset = 40
-        print("Release chasing", 30, 30, TEXT_TYPED, false, 2)
+        local offset = 25
+        print("Release chasing", 30, 30, TEXT_TYPED, false, 3)
         for k, v in pairs(menu_options) do
             if k == menu_cursor then
                 print(v, 50, offset * k + 30, TEXT_TYPED, false, 2)
@@ -399,6 +431,8 @@
             if menu_cursor == 1 then
                 start_game()
             elseif menu_cursor == 2 then
+                start_highscores()
+            elseif menu_cursor == 3 then
                 exit()
             end
         end
@@ -423,8 +457,8 @@
 
      local secs_in_game = math.floor((time() - game_start_time) / 1000)
      local time_left = 0
-     if secs_in_game < 30 then
-        time_left = 30 - secs_in_game
+     if secs_in_game < 3 then
+        time_left = 3 - secs_in_game
      end
      local timer_color = SCORE_LINE
      if time_left < 4 then
@@ -466,5 +500,8 @@
 		elseif current_state == possible_states.gameover then
 			game_over_process_menu()
 			draw_game_over()
-		end
+		elseif current_state == possible_states.highscores then
+            draw_highscores()
+            process_highscores()
+        end
     end
