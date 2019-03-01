@@ -198,7 +198,7 @@
             bad_guys[x] =  {
                 x=bx,
                 y=by,
-                score=100,
+                score=70,
                 tile=BAD_GUY,
                 consumed=false
             }
