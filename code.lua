@@ -117,11 +117,11 @@
 		"Reccurrence",
 		"Fix bug",
 		"Coffee",
-		"Fix bug",
-		"Fix bug",
-		"Fix bug",
-		"Fix bug",
-		"Fix bug",
+		"Meeting",
+		"Another meeting",
+		"Vulnerability",
+		"GitHub is down",
+		"Audit Wizard",
 		"Fix bug"
 	}
         for x=1,10,1 do
