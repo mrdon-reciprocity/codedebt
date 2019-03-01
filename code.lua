@@ -85,7 +85,7 @@
     SCORE_LINE = 2
     SCORE_TIMELOW = 6
 
-    GAME_LENGTH = 5
+    GAME_LENGTH = 45
    
     --math.randomseed(os.time())
 		
