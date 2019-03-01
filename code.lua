@@ -135,7 +135,7 @@
             while tx == 0 do
                 tx = math.random(SCREEN_X)
                 ty = math.random(SCREEN_Y)
-                if mget(tx, ty) ~= FLOOR then
+                if mget(tx, ty) ~= FLOOR or (tx==p.x and ty==p.y) then
                     tx = 0
                 end
             end
