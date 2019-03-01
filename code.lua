@@ -50,13 +50,17 @@
     	["\\"]=41,
     	[";"]=42,
     	["'"]=43,
+        ["_"]=44,
     	[","]=45,
     	["."]=46,
     	["/"]=47,
     	[" "]=48
 	}
 
-	
+    KEYS_BY_CODE = {}
+    for k, v in pairs(KEYS) do
+        KEYS_BY_CODE[v] = k
+    end
     
     --sprite vars
     FLOOR=1  --the floor sprite will be stored in the 1 slot
@@ -140,6 +144,7 @@
                 y=ty,
                 word=treasure_words[x],
                 current_pos=1,
+                current_char_code=KEYS["_"],
                 score=100,
                 tile=TREASURE,
                 consumed=false
@@ -253,34 +258,50 @@
 		    
         if keyp(KEYS[current_letter])==true then
 			current_treasure.current_pos = current_treasure.current_pos+1
-	
-			if current_treasure.current_pos==string.len(current_treasure.word)+1 then
-				current_treasure.consumed=true
-                p.x=current_treasure.x
-                p.y=current_treasure.y
-				p.score=p.score+current_treasure.score
-				current_treasure=nil
-				current_state = possible_states.chasing
-				music(1, 0, -1, false)
-			end 
-		end
-
+            current_treasure.current_char_code = KEYS["_"]
+		elseif btnp(0, 10, 10) then
+            current_treasure.current_char_code = current_treasure.current_char_code + 1
+            if current_treasure.current_char_code > 48 then
+                current_treasure.current_char_code = 1
+            end
+        elseif btnp(1, 10, 10) then
+            current_treasure.current_char_code = current_treasure.current_char_code - 1
+            if current_treasure .current_char_code < 1 then
+                current_treasure.current_char_code = 48
+            end
+        end
+        if KEYS_BY_CODE[current_treasure.current_char_code] == current_letter then
+            current_treasure.current_pos = current_treasure.current_pos + 1
+            current_treasure.current_char_code = KEYS["_"]
+        end
+        if current_treasure.current_pos==string.len(current_treasure.word)+1 then
+            current_treasure.consumed=true
+            p.x=current_treasure.x
+            p.y=current_treasure.y
+            p.score=p.score+current_treasure.score
+            current_treasure=nil
+            current_state = possible_states.chasing
+            music(1, 0, -1, false)
+        end 
 	end
 
 	function draw_typing()        
 		--Draw rectangle
 		rect (8,8,204,104,1)
 		rect (10,10,200,100,0) 
+
+        print (current_treasure.word, 15, 15, TEXT_UNTYPED, true, 3)       
+
+
 		local typed_length = 0
 		if current_treasure.current_pos~=1 then
 			local typed_text = current_treasure.word:sub(1,current_treasure.current_pos-1)
 			
-			print (typed_text, 15, 15, TEXT_TYPED, true, 2 )
+			print (typed_text, 15, 35, TEXT_TYPED, true, 3 )
 			typed_length = string.len(typed_text)
 		end
-		local untyped_text = current_treasure.word:sub(current_treasure.current_pos,string.len(current_treasure.word))
-		print (untyped_text, 15+typed_length*20, 15, TEXT_UNTYPED, true, 2 )
-	
+
+        print(KEYS_BY_CODE[current_treasure.current_char_code], 15 + typed_length * 18, 35, TEXT_UNTYPED, true, 3)
 	end
 
 	function game_over_menu()
