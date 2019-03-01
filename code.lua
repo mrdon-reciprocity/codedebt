@@ -159,22 +159,28 @@
     	y=p.y
         --player presses "up"
         if btnp(0,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
-         y=p.y-1 
+         y=p.y-1
+	 music(3, 0, -1, false)
         
         end
         --player presses "down"
     	if btnp(1,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          y=p.y+1 
+         music(3, 0, -1, false)
+
         
         end
         --player presses "left"
     	if btnp(2,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          x=p.x-1 
-        
+         music(3, 0, -1, false)
+
         end
         --player presses "right"
     	if btnp(3,MOVEMENT_DELAY,MOVEMENT_SPEED) then 
          x=p.x+1 
+         music(3, 0, -1, false)
+
         end
 		next_tile = mget(x,y) 
 
