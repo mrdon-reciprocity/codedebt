@@ -1,15 +1,15 @@
--- title:  simple collision detection
--- author: Bear Thorne
--- desc:   Detecting Collision for Grid Movement
+-- title:  Release Chasing
+-- author: Aleksandra, Ines, Peter, and Don
+-- desc:   Simple game to score points by getting treasures before time expires.
 -- script: lua
 
 
 require "keys"
-require "states/main_menu"
-require "states/high_scores"
-require "states/game_over"
-require "states/chasing"
-require "states/typing"
+require "states.main_menu"
+require "states.high_scores"
+require "states.game_over"
+require "states.chasing"
+require "states.typing"
 
 --sprite vars
 FLOOR = 1 --the floor sprite will be stored in the 1 slot
