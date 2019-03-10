@@ -56,3 +56,9 @@ function TIC()
     state:input()
     state:draw()
 end
+
+function OVR()
+    if state == TypingState or state == ChasingState then
+        ChasingState:draw_status()
+    end
+end

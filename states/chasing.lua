@@ -29,7 +29,6 @@ ChasingState = {
 }
 
 function ChasingState:start()
-    trace("starting game")
     --player object
     self.p = {
         x = 3, --center of screen x
@@ -129,7 +128,6 @@ function ChasingState:input()
     for pos = 1, #self.treasures, 1 do
         local treasure = self.treasures[pos]
         if treasure.x == x and treasure.y == y and treasure.consumed == false then
-            trace("treasure")
             self.current_treasure = treasure
             new_state(TypingState)
             music(0, 0, -1, false)
@@ -149,7 +147,7 @@ function ChasingState:input()
 
     if found == false then
         if self.exit_door.x == x and self.exit_door.y == y then
-            new_state(GameOverState)
+            self:game_over()
             music(2, 0, -1, true)
             self.p.score = self.p.score + 500
         elseif next_tile == FLOOR then
@@ -157,6 +155,16 @@ function ChasingState:input()
             self.p.y = y
         end
     end
+end
+
+function ChasingState:game_over()
+    self.start_time = Nil
+    new_state(GameOverState)
+end
+
+function ChasingState:game_over_timeout()
+    self.p.score = 0
+    self:game_over()
 end
 
 --draw screen graphics
@@ -175,22 +183,7 @@ function ChasingState:draw()
         end
     end
 
-
-    local secs_in_game = math.floor((time() - self.start_time) / 1000)
-    local time_left = 0
-    if secs_in_game < GAME_LENGTH then
-        time_left = GAME_LENGTH - secs_in_game
-    end
-    local timer_color = SCORE_LINE
-    if time_left < 10 then
-        timer_color = SCORE_TIMELOW
-    end
-
-    if time_left == 0 then
-        self.p.score = 0
-        new_state(GameOverState)
-    end
-
+    local time_left = self:_get_time_left()
     if time_left <= GAME_LENGTH - 5 then
         for pos = 1, #self.bad_guys, 1 do
             local bad_guy = self.bad_guys[pos]
@@ -200,8 +193,28 @@ function ChasingState:draw()
             end
         end
     end
+end
+
+function ChasingState:_get_time_left()
+    local secs_in_game = math.floor((time() - self.start_time) / 1000)
+    local time_left = 0
+    if secs_in_game < GAME_LENGTH then
+        time_left = GAME_LENGTH - secs_in_game
+    end
+    return time_left
+end
+
+function ChasingState:draw_status()
+    local time_left = self:_get_time_left()
+    local timer_color = SCORE_LINE
+    if time_left < 10 then
+        timer_color = SCORE_TIMELOW
+    end
+
+    if time_left == 0 then
+        self:game_over_timeout()
+    end
+
     print("Time left: " .. time_left, 10, WINDOW_Y - 10, timer_color, false, 1)
     print("Score: " .. self.p.score, WINDOW_X / 2, WINDOW_Y - 10, SCORE_LINE, false, 1)
 end
-
-
