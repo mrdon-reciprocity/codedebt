@@ -5,61 +5,7 @@
 
 --VARIABLES
 
-KEYS = {
-    ["A"] = 1,
-    ["B"] = 2,
-    ["C"] = 3,
-    ["D"] = 4,
-    ["E"] = 5,
-    ["F"] = 6,
-    ["G"] = 7,
-    ["H"] = 8,
-    ["I"] = 9,
-    ["J"] = 10,
-    ["K"] = 11,
-    ["L"] = 12,
-    ["M"] = 13,
-    ["N"] = 14,
-    ["O"] = 15,
-    ["P"] = 16,
-    ["Q"] = 17,
-    ["R"] = 18,
-    ["S"] = 19,
-    ["T"] = 20,
-    ["U"] = 21,
-    ["V"] = 22,
-    ["W"] = 23,
-    ["X"] = 24,
-    ["Y"] = 25,
-    ["Z"] = 26,
-    ["0"] = 27,
-    ["1"] = 28,
-    ["2"] = 29,
-    ["3"] = 30,
-    ["4"] = 31,
-    ["5"] = 32,
-    ["6"] = 33,
-    ["7"] = 34,
-    ["8"] = 35,
-    ["9"] = 36,
-    ["-"] = 37,
-    ["="] = 38,
-    ["["] = 39,
-    ["]"] = 40,
-    ["\\"] = 41,
-    [";"] = 42,
-    ["'"] = 43,
-    ["_"] = 44,
-    [","] = 45,
-    ["."] = 46,
-    ["/"] = 47,
-    [" "] = 48
-}
-
-KEYS_BY_CODE = {}
-for k, v in pairs(KEYS) do
-    KEYS_BY_CODE[v] = k
-end
+require "keys"
 
 --sprite vars
 FLOOR = 1 --the floor sprite will be stored in the 1 slot
@@ -113,6 +59,13 @@ exit_door = {
     y = 3,
     tile = EXIT
 }
+
+p = {}
+treasures = {}
+current_treasure = nil
+treasure_words = {}
+game_start_time = {}
+bad_guys = {}
 
 --FUNCTIONS
 
@@ -205,11 +158,8 @@ end
 --player movement
 --we'll use the btnp() function to detect a single button press
 function move_chasing()
-    time_in_game = (time() - game_start_time) / 1000
-
-
-    x = p.x
-    y = p.y
+    local x = p.x
+    local y = p.y
     --player presses "up"
     if btnp(0, MOVEMENT_DELAY, MOVEMENT_SPEED) then
         y = p.y - 1
@@ -230,7 +180,7 @@ function move_chasing()
         x = p.x + 1
         music(3, 0, -1, false)
     end
-    next_tile = mget(x, y)
+    local next_tile = mget(x, y)
 
     local found = false
     for pos = 1, #treasures, 1 do
@@ -291,7 +241,7 @@ function process_typing()
         current_treasure.consumed = true
         p.x = current_treasure.x
         p.y = current_treasure.y
-        rand_plus = math.random(-5, 5)
+        local rand_plus = math.random(-5, 5)
         p.score = p.score + current_treasure.score + rand_plus
         current_treasure = nil
         current_state = possible_states.chasing
